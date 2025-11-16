@@ -1,31 +1,59 @@
-# RSSchool NodeJS websocket task template
-> Static http server and base task packages. 
-> By default WebSocket client tries to connect to the 3000 port.
+# Battleship WS Server
+
+TypeScript WebSocket server with a built‑in static HTTP server for the `front/` bundle.
+
+## Requirements
+- Node.js 24.x
 
 ## Installation
-1. Clone/download repo
-2. `npm install`
+```bash
+npm install
+```
 
-## Usage
-**Development**
+## Environment
+Create `.env` (or copy `env.example`):
+```
+PORT=3000        # WebSocket port
+HTTP_PORT=8181   # Static HTTP port for /front
+```
 
-`npm run start:dev`
+## Run
+```bash
+npm run start
+```
 
-* App served @ `http://localhost:8181` with nodemon
+You should see:
+- HTTP server listening on http://localhost:8181
+- WebSocket listening on ws://localhost:3000
 
-**Production**
+Open the app:
+- Frontend: http://localhost:8181
+- The frontend connects to WS at ws://localhost:3000
 
-`npm run start`
+## Messages (short)
+All messages are JSON strings with `id: 0`.
 
-* App served @ `http://localhost:8181` without nodemon
+- Player
+  - `reg` → personal `reg`, broadcast `update_winners`
+- Rooms
+  - `create_room` → broadcast `update_room`
+  - `add_user_to_room` → to both `create_game`, then broadcast `update_room`
+  - `single_play` → personal `create_game` vs bot
+- Ships
+  - `add_ships` → after both submit: personal `start_game`, then broadcast `turn`
+- Combat
+  - `attack` → broadcast `attack`, broadcast `turn`, on win → `finish` + `update_winners`
+  - `randomAttack` → same as `attack`, server picks cell
 
----
+Notes:
+- Incoming `data` may be JSON string; server accepts and parses it.
+- Outgoing messages contain `data` serialized as a JSON string (frontend should `JSON.parse(data)`).
 
-**All commands**
+## Scripts
+- `npm run start` – run server (WS + static HTTP)
+- `npm run build` – compile TypeScript
+- `npm run lint` – ESLint
+- `npm run format` – Prettier
 
-Command | Description
---- | ---
-`npm run start:dev` | App served @ `http://localhost:8181` with nodemon
-`npm run start` | App served @ `http://localhost:8181` without nodemon
-
-**Note**: replace `npm` with `yarn` in `package.json` if you use yarn.
+## Shutdown
+Ctrl+C – server closes all WS connections and exits gracefully.

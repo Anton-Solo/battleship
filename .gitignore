@@ -1,16 +1,11 @@
-# dependencies
-/node_modules
-
-# System Files
-.DS_Store
-Thumbs.db
-[Dd]esktop.ini
-
-# Links
-*.lnk
+node_modules/
+build/
+temp/
+/config.local.js
+.env
+*.log
 .idea/
-*.PEM
 .vscode/
-
-# Logs
-npm-debug.log
+*.suo
+*.user
+*.bak
